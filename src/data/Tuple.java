@@ -1,11 +1,14 @@
 package data;
+
+import java.io.Serializable;
+
 /**
  * 
  * rappresenta una tupla come sequenza di coppie attributo-valore.
  *
  * 
  */
-public class Tuple {
+public class Tuple implements Serializable{
 	/**
 	 * sequenza di coppie attributo-valore
 	 */

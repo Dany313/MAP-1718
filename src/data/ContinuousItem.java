@@ -1,9 +1,10 @@
 package data;
 
+import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-public class ContinuousItem extends Item {
+public class ContinuousItem extends Item implements Serializable{
 	/**
 	 * richiama il costruttore della super classe
 	 * 

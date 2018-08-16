@@ -1,7 +1,7 @@
 package data;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -9,6 +9,11 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import javax.swing.text.html.HTMLDocument.Iterator;
+
+import database.DbAccess;
+import database.EmptyTypeException;
+import database.Example;
+import database.TableData;
 
 public class Data {
 	/**
@@ -39,207 +44,16 @@ public class Data {
 	 * uno per ciascun attributo (nella tabella sottostante). Attenzione a modellare
 	 * correttamente, nome, indice e dominio di ciascun attributo. Inizializza
 	 * numberOfExamples
+	 * @throws EmptyTypeException 
+	 * @throws SQLException 
 	 */
-	public Data() {
+	public Data(String database) throws SQLException, EmptyTypeException {
+		DbAccess db= new DbAccess();
+		TableData date=new TableData(db) ;
+		this.data=date.getDistinctTransazioni(database);
+		
 
-		String outLookValues[] = new String[3];
-		outLookValues[0] = "overcast";
-		outLookValues[1] = "rain";
-		outLookValues[2] = "sunny";
-		this.explanatorySet.add(new DiscreteAttribute("Outlook", 0, outLookValues));
-
-		/*
-		 * String TemperatureValues[] = new String[3]; TemperatureValues[0] = "hot";
-		 * TemperatureValues[1] = "mild"; TemperatureValues[2] = "cool";
-		 * this.explanatorySet.add(new DiscreteAttribute("Temperature", 1,
-		 * TemperatureValues));
-		 */
-		explanatorySet.add(new ContinuousAttribute("Temperature", 1, 3.2, 38.7));
-
-		String HumidityValues[] = new String[2];
-		HumidityValues[0] = "high";
-		HumidityValues[1] = "normal";
-		this.explanatorySet.add(new DiscreteAttribute("Humidity", 2, HumidityValues));
-
-		String WindValues[] = new String[2];
-		WindValues[0] = "weak";
-		WindValues[1] = "strong";
-		this.explanatorySet.add(new DiscreteAttribute("Wind", 3, WindValues));
-
-		String PlayValues[] = new String[2];
-		PlayValues[0] = "yes";
-		PlayValues[1] = "no";
-		this.explanatorySet.add(new DiscreteAttribute("PlayTennis", 4, PlayValues));
-
-		/*
-		 * this.data = new Object[14][5]; data[0][0] = "sunny"; data[0][1] = "hot";
-		 * data[0][2] = "high"; data[0][3] = "weak"; data[0][4] = "no";
-		 * 
-		 * data[1][0] = "sunny"; data[1][1] = "hot"; data[1][2] = "high"; data[1][3] =
-		 * "strong"; data[1][4] = "no";
-		 * 
-		 * data[2][0] = "overcast"; data[2][1] = "hot"; data[2][2] = "high"; data[2][3]
-		 * = "weak"; data[2][4] = "yes";
-		 * 
-		 * data[3][0] = "rain"; data[3][1] = "mild"; data[3][2] = "high"; data[3][3] =
-		 * "weak"; data[3][4] = "yes";
-		 * 
-		 * data[4][0] = "rain"; data[4][1] = "cool"; data[4][2] = "normal"; data[4][3] =
-		 * "weak"; data[4][4] = "yes";
-		 * 
-		 * data[5][0] = "rain"; data[5][1] = "cool"; data[5][2] = "normal"; data[5][3] =
-		 * "strong"; data[5][4] = "no";
-		 * 
-		 * data[6][0] = "overcast"; data[6][1] = "cool"; data[6][2] = "normal";
-		 * data[6][3] = "strong"; data[6][4] = "yes";
-		 * 
-		 * data[7][0] = "sunny"; data[7][1] = "mild"; data[7][2] = "high"; data[7][3] =
-		 * "weak"; data[7][4] = "no";
-		 * 
-		 * data[8][0] = "sunny"; data[8][1] = "cool"; data[8][2] = "normal"; data[8][3]
-		 * = "Weak"; data[8][4] = "yes";
-		 * 
-		 * data[9][0] = "rain"; data[9][1] = "mild"; data[9][2] = "normal"; data[9][3] =
-		 * "weak"; data[9][4] = "yes";
-		 * 
-		 * data[10][0] = "sunny"; data[10][1] = "mild"; data[10][2] = "normal";
-		 * data[10][3] = "strong"; data[10][4] = "yes";
-		 * 
-		 * data[11][0] = "overcast"; data[11][1] = "mild"; data[11][2] = "high";
-		 * data[11][3] = "strong"; data[11][4] = "yes";
-		 * 
-		 * data[12][0] = "overcast"; data[12][1] = "hot"; data[12][2] = "normal";
-		 * data[12][3] = "weak"; data[12][4] = "yes";
-		 * 
-		 * data[13][0] = "rain"; data[13][1] = "mild"; data[13][2] = "high"; data[13][3]
-		 * = "strong"; data[13][4] = "no";
-		 */
-
-		TreeSet<Example> tempData = new TreeSet<Example>();
-		Example ex0 = new Example();
-		Example ex1 = new Example();
-		Example ex2 = new Example();
-		Example ex3 = new Example();
-		Example ex4 = new Example();
-		Example ex5 = new Example();
-		Example ex6 = new Example();
-		Example ex7 = new Example();
-		Example ex8 = new Example();
-		Example ex9 = new Example();
-		Example ex10 = new Example();
-		Example ex11 = new Example();
-		Example ex12 = new Example();
-		Example ex13 = new Example();
-
-		ex0.add(new String("sunny"));
-		ex1.add(new String("sunny"));
-		ex2.add(new String("overcast"));
-		ex3.add(new String("rain"));
-		ex4.add(new String("rain"));
-		ex5.add(new String("rain"));
-		ex6.add(new String("overcast"));
-		ex7.add(new String("sunny"));
-		ex8.add(new String("sunny"));
-		ex9.add(new String("rain"));
-		ex10.add(new String("sunny"));
-		ex11.add(new String("overcast"));
-		ex12.add(new String("overcast"));
-		ex13.add(new String("rain"));
-
-		/*
-		 * ex0.add(new String ("hot")); ex1.add(new String ("hot")); ex2.add(new String
-		 * ("hot")); ex3.add(new String ("mild")); ex4.add(new String ("cool"));
-		 * ex5.add(new String ("cool")); ex6.add(new String ("cool")); ex7.add(new
-		 * String ("mild")); ex8.add(new String ("cool")); ex9.add(new String ("mild"));
-		 * ex10.add(new String ("mild")); ex11.add(new String ("mild")); ex12.add(new
-		 * String ("hot")); ex13.add(new String ("mild"));
-		 */
-		ex0.add(new Double(37.5));
-		ex1.add(new Double(38.7));
-		ex2.add(new Double(37.5));
-		ex3.add(new Double(20.5));
-		ex4.add(new Double(20.7));
-		ex5.add(new Double(21.2));
-		ex6.add(new Double(20.5));
-		ex7.add(new Double(21.2));
-		ex8.add(new Double(21.2));
-		ex9.add(new Double(19.8));
-		ex10.add(new Double(3.5));
-		ex11.add(new Double(3.6));
-		ex12.add(new Double(3.5));
-		ex13.add(new Double(3.2));
-
-		ex0.add(new String("high"));
-		ex1.add(new String("high"));
-		ex2.add(new String("high"));
-		ex3.add(new String("high"));
-		ex4.add(new String("normal"));
-		ex5.add(new String("normal"));
-		ex6.add(new String("normal"));
-		ex7.add(new String("high"));
-		ex8.add(new String("normal"));
-		ex9.add(new String("normal"));
-		ex10.add(new String("normal"));
-		ex11.add(new String("high"));
-		ex12.add(new String("normal"));
-		ex13.add(new String("high"));
-
-		ex0.add(new String("weak"));
-		ex1.add(new String("strong"));
-		ex2.add(new String("weak"));
-		ex3.add(new String("weak"));
-		ex4.add(new String("weak"));
-		ex5.add(new String("strong"));
-		ex6.add(new String("strong"));
-		ex7.add(new String("weak"));
-		ex8.add(new String("weak"));
-		ex9.add(new String("weak"));
-		ex10.add(new String("strong"));
-		ex11.add(new String("strong"));
-		ex12.add(new String("weak"));
-		ex13.add(new String("strong"));
-
-		ex0.add(new String("no"));
-		ex1.add(new String("no"));
-		ex2.add(new String("yes"));
-		ex3.add(new String("yes"));
-		ex4.add(new String("yes"));
-		ex5.add(new String("no"));
-		ex6.add(new String("yes"));
-		ex7.add(new String("no"));
-		ex8.add(new String("yes"));
-		ex9.add(new String("yes"));
-		ex10.add(new String("yes"));
-		ex11.add(new String("yes"));
-		ex12.add(new String("yes"));
-		ex13.add(new String("no"));
-
-		tempData.add(ex0);
-		tempData.add(ex1);
-		tempData.add(ex2);
-		tempData.add(ex3);
-		tempData.add(ex4);
-		tempData.add(ex5);
-		tempData.add(ex6);
-		tempData.add(ex7);
-		tempData.add(ex8);
-		tempData.add(ex9);
-		tempData.add(ex10);
-		tempData.add(ex11);
-		tempData.add(ex12);
-		tempData.add(ex13);
-
-		data = new ArrayList<Example>(tempData);
-
-		this.numberOfExamples = this.data.size();
-
-		// numberOfExamples
-
-		numberOfExamples = 14;
-
-		// this.distinctTuples = this.countDistinctTuples();
-		// System.out.println(this.distinctTuples);
-
+		
 	}
 
 	/**
@@ -492,65 +306,6 @@ public class Data {
 
 	}*/
 
-	class Example implements Comparable<Example> {
-		/**
-		 * array di Object che rappresentano la singola transazione (o riga di una
-		 * tabella)
-		 */
-		List<Object> example = new ArrayList<Object>();
-
-		/**
-		 * aggiunge o in coda ad example
-		 * 
-		 * @param o
-		 *            ogetto da aggiungere
-		 */
-		void add(Object o) {
-			this.example.add(o);
-		}
-
-		/**
-		 * restituisce lo i-esimo riferimento collezionato in example
-		 * 
-		 * @param i
-		 * @return
-		 */
-		Object get(int i) {
-			return this.example.get(i);
-		}
-
-		@Override
-		/**
-		 * restituisce 0, -1, 1 sulla base del risultato del confronto. 0 se i due
-		 * esempi includono gli stessi valori. Altrimenti il risultato del
-		 * compareTo(...) invocato sulla prima coppia di valori in disaccordo.
-		 */
-		public int compareTo(Example arg0) {
-			for (int i = 0; i < this.example.size(); i++) {
-				if (!this.example.get(i).equals(arg0.example.get(i))) {
-					if (this.example.get(i).toString().length() < arg0.example.get(i).toString().length()) {
-						return -1;
-					} else {
-						return 1;
-					}
-
-				}
-			}
-			return 0;
-		}
-
-		/**
-		 * restutuisce una stringa che rappresenta lo stato di example (fare uso di
-		 * for-each)
-		 */
-		public String toString() {
-			String out = "";
-			for (Object a : this.example) {
-				out += (String) a + ",";
-			}
-			return out;
-		}
-
-	}
+	
 
 }

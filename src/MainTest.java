@@ -1,5 +1,8 @@
+import java.sql.SQLException;
+
 import data.Data;
 import data.OutOfRangeSampleSize;
+import database.EmptyTypeException;
 import keyboardinput.Keyboard;
 import mining.KMeansMiner;
 
@@ -7,10 +10,12 @@ public class MainTest {
 
 	/**
 	 * @param args
+	 * @throws EmptyTypeException 
+	 * @throws SQLException 
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws SQLException, EmptyTypeException {
 
-		Data data = new Data();
+		Data data = new Data("mapdb");
 		System.out.println(data);
 		char esecuzione = 'y';
 		while (esecuzione == 'y') {

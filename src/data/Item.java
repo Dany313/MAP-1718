@@ -1,4 +1,5 @@
 package data;
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -11,7 +12,7 @@ import java.util.Set;
  *
  * 
  */
-public abstract class Item {
+public abstract class Item implements Serializable{
 	/**
 	 * attributo coinvolto nell'item
 	 */

@@ -1,5 +1,7 @@
 package data;
 
+import java.io.Serializable;
+
 /**
  * 
  * estende la classe Item e rappresenta una coppia <Attributo discreto- valore
@@ -7,7 +9,7 @@ package data;
  *
  * 
  */
-public class DiscreteItem extends Item {
+public class DiscreteItem extends Item implements Serializable {
 	/**
 	 * Invoca il costruttore della classe madre
 	 * 
