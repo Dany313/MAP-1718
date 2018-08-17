@@ -1,4 +1,5 @@
 package data;
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -12,7 +13,7 @@ import java.util.TreeSet;
  *
  * 
  */
-public class DiscreteAttribute extends Attribute implements Iterable<String> {
+public class DiscreteAttribute extends Attribute implements Iterable<String>,Serializable {
 	/**
 	 * array di oggetti String, uno per ciascun valore del dominio discreto. I
 	 * valori del dominio sono memorizzati in values seguendo un ordine

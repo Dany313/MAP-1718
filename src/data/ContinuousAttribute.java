@@ -1,4 +1,7 @@
 package data;
+
+import java.io.Serializable;
+
 /**
  * 
  * estende la classe Attribute e modella un attributo continuo (numerico). Tale
@@ -7,7 +10,7 @@ package data;
  * domini diversi
  *
  */
-public class ContinuousAttribute extends Attribute {
+public class ContinuousAttribute extends Attribute implements Serializable {
 	/**
 	 * estremo superiore del dominio
 	 */

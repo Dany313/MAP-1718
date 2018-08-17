@@ -1,16 +1,16 @@
 package database;
 
-import java.sql.Connection;
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+
+import com.mysql.jdbc.ResultSetMetaData;
 
 import database.TableSchema.Column;
 
@@ -44,24 +44,39 @@ public class TableData {
 	 * @param table
 	 * @return
 	 * @throws SQLException
+	 * @throws IllegalAccessException
+	 * @throws InstantiationException
+	 * @throws ClassNotFoundException
 	 * @throws EmptySetException
 	 */
-	public List<Example> getDistinctTransazioni(String table) throws SQLException, EmptyTypeException {
-		Example ex = new Example();
+	public List<Example> getDistinctTransazioni(String table) throws SQLException, EmptyTypeException,
+			ClassNotFoundException, InstantiationException, IllegalAccessException {
+
+		// Example colonne = new Example();
 		List<Example> list = new ArrayList<Example>();
+		db.initConnection();
+		this.db.getConnection();
 		Statement s = this.db.getConnection().createStatement();
-		ResultSet r = s.executeQuery("SELECT * FROM "+table);
+
+		ResultSet r = s.executeQuery("SELECT * FROM " + table);
+		ResultSetMetaData colonne = (ResultSetMetaData) r.getMetaData();
 
 		while (r.next()) {
-			ex.add(r.getString(1));
-			ex.add(r.getFloat(2));
-			ex.add(r.getString(3));
-			ex.add(r.getString(4));
-			ex.add(r.getString(5));
+			Example ex = new Example();
+			for (int i = 1; i <= colonne.getColumnCount(); i++) {
+				if (r.getObject(i).getClass().equals(String.class)) {
+					ex.add(r.getString(i));
+				} else {
+					Double value = new BigDecimal(String.valueOf(r.getFloat(i))).doubleValue();
+					ex.add(value);
+				}
+
+			}
 
 			list.add(ex);
 
 		}
+
 		return list;
 	}
 
@@ -80,9 +95,14 @@ public class TableData {
 		Object obj = null;
 		Set<Object> objects = new TreeSet<Object>();
 		Statement s = this.db.getConnection().createStatement();
-		ResultSet r = s.executeQuery("SELECT" + column + "FROM" + table + "order by" + column + "asc");
+		ResultSet r = s.executeQuery(
+				"SELECT " + column.getColumnName() + " FROM " + table + " order by " + column.getColumnName() + " asc");
 		while (r.next()) {
-			obj = r.getObject(1);
+			if (r.getObject(column.getColumnName()).getClass().equals(String.class)) {
+				obj = r.getString(column.getColumnName());
+			} else {
+				obj = r.getFloat(column.getColumnName());
+			}
 			objects.add(obj);
 
 		}
@@ -108,8 +128,16 @@ public class TableData {
 			throws SQLException, NoValueException {
 		Object obj = null;
 		Statement s = this.db.getConnection().createStatement();
-		ResultSet r = s.executeQuery("SELECT " + aggregate + "(" + column + ") from" + table);
-		obj = r.getObject(1);
+
+		ResultSet r = s.executeQuery("SELECT " + aggregate.name() + "(" + column.getColumnName() + ") as "
+				+ column.getColumnName() + " from " + table);
+		if (r.next()) {
+			if (!column.isNumber()) {
+				obj = r.getString(column.getColumnName());
+			} else {
+				obj = r.getFloat(column.getColumnName());
+			}
+		}
 		return obj;
 	}
 

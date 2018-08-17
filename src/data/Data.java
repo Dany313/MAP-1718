@@ -1,5 +1,6 @@
 package data;
 
+import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -13,7 +14,10 @@ import javax.swing.text.html.HTMLDocument.Iterator;
 import database.DbAccess;
 import database.EmptyTypeException;
 import database.Example;
+import database.NoValueException;
+import database.QUERY_TYPE;
 import database.TableData;
+import database.TableSchema;
 
 public class Data {
 	/**
@@ -44,16 +48,46 @@ public class Data {
 	 * uno per ciascun attributo (nella tabella sottostante). Attenzione a modellare
 	 * correttamente, nome, indice e dominio di ciascun attributo. Inizializza
 	 * numberOfExamples
-	 * @throws EmptyTypeException 
-	 * @throws SQLException 
+	 * 
+	 * @throws EmptyTypeException
+	 * @throws SQLException
+	 * @throws IllegalAccessException
+	 * @throws InstantiationException
+	 * @throws ClassNotFoundException
+	 * @throws NoValueException
 	 */
-	public Data(String database) throws SQLException, EmptyTypeException {
-		DbAccess db= new DbAccess();
-		TableData date=new TableData(db) ;
-		this.data=date.getDistinctTransazioni(database);
-		
+	public Data(String table) throws SQLException, EmptyTypeException, ClassNotFoundException, InstantiationException,
+			IllegalAccessException, NoValueException {
+		DbAccess db = new DbAccess();
 
-		
+		TableData date = new TableData(db);
+		this.data = date.getDistinctTransazioni(table);
+
+		this.numberOfExamples = data.size();
+
+		TableSchema init = new TableSchema(db, table);
+
+		for (int i = 0; i < init.getNumberOfAttributes(); i++) {
+			if (init.getColumn(i).isNumber()) {
+				Float min = (float) date.getAggregateColumnValue(table, init.getColumn(i), QUERY_TYPE.MIN);
+				Float max = (float) date.getAggregateColumnValue(table, init.getColumn(i), QUERY_TYPE.MAX);
+				Double dmin = new BigDecimal(String.valueOf(min)).doubleValue();
+				Double dmax = new BigDecimal(String.valueOf(max)).doubleValue();
+
+				ContinuousAttribute temp = new ContinuousAttribute(init.getColumn(i).getColumnName(), i, (double) dmin,
+						(double) dmax);
+				this.explanatorySet.add(temp);
+			} else {
+				Object[] colonne = date.getDistinctColumnValues(table, init.getColumn(i)).toArray();
+				String[] colonne2 = new String[colonne.length];
+				for (int j = 0; j < colonne.length; j++) {
+					colonne2[j] = (String) colonne[j];
+				}
+				DiscreteAttribute temp2 = new DiscreteAttribute(init.getColumn(i).getColumnName(), i, colonne2);
+				this.explanatorySet.add(temp2);
+			}
+		}
+
 	}
 
 	/**
@@ -134,10 +168,12 @@ public class Data {
 	public Tuple getItemSet(int index) {
 		Tuple tuple = new Tuple(this.getNumberOfExplanatoryAttributes());
 		for (int i = 0; i < this.getNumberOfExplanatoryAttributes(); i++) {
-			if(!(this.getAttributeValue(index, i) instanceof String)) {
-				tuple.add((Item)new ContinuousItem(this.explanatorySet.get(i),(Double) this.getAttributeValue(index, i)),i);
-			}else {
-				tuple.add((Item)new DiscreteItem((DiscreteAttribute) this.explanatorySet.get(i),(String) this.getAttributeValue(index, i)),i);
+			if (!(this.getAttributeValue(index, i) instanceof String)) {
+				tuple.add((Item) new ContinuousItem(this.explanatorySet.get(i),
+						(Double) this.getAttributeValue(index, i)), i);
+			} else {
+				tuple.add((Item) new DiscreteItem((DiscreteAttribute) this.explanatorySet.get(i),
+						(String) this.getAttributeValue(index, i)), i);
 			}
 		}
 		return tuple;
@@ -293,19 +329,17 @@ public class Data {
 	 * @param index
 	 * @return
 	 */
-	/*Tuple getItemSet(int index) {
-		Tuple a = new Tuple(this.explanatorySet.size());
-		for(int i=0; i<this.explanatorySet.size();i++) {
-			if(this.getAttributeValue(index, i) instanceof ContinuousAttribute) {
-				a.add((Item)new ContinuousItem(this.explanatorySet.get(i),(Double) this.getAttributeValue(index, i)),i);
-			}else {
-				a.add((Item)new DiscreteItem((DiscreteAttribute) this.explanatorySet.get(i),(String) this.getAttributeValue(index, i)),i);
-			}
-		}
-		return a;
-
-	}*/
-
-	
+	/*
+	 * Tuple getItemSet(int index) { Tuple a = new
+	 * Tuple(this.explanatorySet.size()); for(int i=0;
+	 * i<this.explanatorySet.size();i++) { if(this.getAttributeValue(index, i)
+	 * instanceof ContinuousAttribute) { a.add((Item)new
+	 * ContinuousItem(this.explanatorySet.get(i),(Double)
+	 * this.getAttributeValue(index, i)),i); }else { a.add((Item)new
+	 * DiscreteItem((DiscreteAttribute) this.explanatorySet.get(i),(String)
+	 * this.getAttributeValue(index, i)),i); } } return a;
+	 * 
+	 * }
+	 */
 
 }

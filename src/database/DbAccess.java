@@ -20,7 +20,7 @@ public class DbAccess {
 	/**
 	 * contiene il nome della base di dati
 	 */
-	final String DATABASE = "mapdb";
+	final String DATABASE = "MapDB";
 	/**
 	 * La porta su cui il DBMS MySQL accetta le connessioni
 	 */
@@ -45,14 +45,20 @@ public class DbAccess {
 	 * database
 	 * 
 	 * @throws DatabaseConnectionException
+	 * @throws IllegalAccessException
+	 * @throws InstantiationException
 	 */
-	void initConnection() throws DatabaseConnectionException,ClassNotFoundException,SQLException{
-		
-			Class.forName(DRIVER_CLASS_NAME);
-			this.conn = (Connection) DriverManager.getConnection(DBMS, USER_ID, PASSWORD);
-			// Statement s = (Statement) conn.createStatement();
-			// ResultSet r =s.executeQuery(sql);
-	
+	void initConnection() throws DatabaseConnectionException, ClassNotFoundException, SQLException,
+			InstantiationException, IllegalAccessException {
+
+		Class.forName(DRIVER_CLASS_NAME).newInstance();
+
+		String connessione = DBMS + "://" + SERVER + ":" + PORT + "/" + DATABASE;
+		this.conn = (Connection) DriverManager.getConnection(connessione, this.USER_ID, this.PASSWORD);
+		if (this.conn == null) {
+			System.out.println("connessione nulla");
+		}
+
 	}
 
 	/**
